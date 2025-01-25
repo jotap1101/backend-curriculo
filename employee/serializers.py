@@ -1,16 +1,17 @@
+from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from .models import Employee
-from django.contrib.auth.password_validation import validate_password
 
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
-        fields = ['id', 'first_name', 'last_name', 'username', 'email', 'password', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions', 'last_login', 'date_joined']
+        fields = ['id', 'first_name', 'last_name', 'username', 'email', 'password', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions', 'last_login', 'date_joined', 'updated_at']
         extra_kwargs = {
             'id': {'read_only': True},
             'password': {'write_only': True},
             'last_login': {'read_only': True},
             'date_joined': {'read_only': True},
+            'updated_at': {'read_only': True}
         }
 
     def validate_password(self, value):

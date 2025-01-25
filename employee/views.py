@@ -1,19 +1,32 @@
 from rest_framework import response, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from utils.helpers import QuerysetHelper
 from .models import Employee
+from .filters import EmployeeFilter
 from .serializers import EmployeeSerializer
 
 class GetEmployees(APIView):
     permission_classes = [IsAuthenticated]
+    filterset_class = EmployeeFilter
+    queryset = Employee.objects.all()
 
     def get(self, request):
         try:
-            employees = Employee.objects.all()
-            serializer = EmployeeSerializer(employees, many=True)
+            queryset = self.queryset
+            queryset = QuerysetHelper.apply_filters(queryset, self.filterset_class, request.GET)
+
+            search_query = request.GET.get('search', None)
+            queryset = QuerysetHelper.apply_search(queryset, search_query, ['first_name', 'last_name', 'username', 'email'])
+
+            ordering = request.GET.get('ordering', None)
+            queryset = QuerysetHelper.apply_ordering(queryset, ordering)
+
+            serializer = EmployeeSerializer(queryset, many=True)
+
             data = {
                 'status': 'success',
-                'count': employees.count(),
+                'count': queryset.count(),
                 'data': {
                     'employees': serializer.data
                 }
@@ -79,7 +92,7 @@ class DetailEmployee(APIView):
             data = {
                 'status': 'error',
                 'errors': [
-                    'Funcionário não encontrado.'
+                    'Employee not found.'
                 ]
             }
 
@@ -119,7 +132,7 @@ class UpdateEmployee(APIView):
             data = {
                 'status': 'error',
                 'errors': [
-                    'Funcionário não encontrado.'
+                    'Employee not found.'
                 ]
             }
 
@@ -156,7 +169,7 @@ class UpdateEmployee(APIView):
             data = {
                 'status': 'error',
                 'errors': [
-                    'Funcionário não encontrado.'
+                    'Employee not found.'
                 ]
             }
 
@@ -177,9 +190,15 @@ class DeleteEmployee(APIView):
     def delete(self, request, pk):
         try:
             employee = Employee.objects.get(pk=pk)
+
             employee.delete()
 
-            return response.Response(status=status.HTTP_204_NO_CONTENT)
+            data = {
+                'status': 'success',
+                'message': 'Employee deleted successfully.'
+            }
+
+            return response.Response(data=data, status=status.HTTP_204_NO_CONTENT)
         except Employee.DoesNotExist:
             data = {
                 'status': 'error',

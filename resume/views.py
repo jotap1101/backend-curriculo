@@ -1,6 +1,7 @@
 from rest_framework import response, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from utils.helpers import QuerysetHelper
 from uuid import UUID
 from .models import Resume
 from .serializers import ResumeSerializer

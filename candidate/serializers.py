@@ -1,7 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError as DRFValidationError
-from uuid import UUID
 from .models import *
 
 class ContactSerializer(serializers.ModelSerializer):

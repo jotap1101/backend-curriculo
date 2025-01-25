@@ -2,7 +2,6 @@ from rest_framework import response, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from utils.helpers import QuerysetHelper
-from django.core.exceptions import ValidationError
 from .models import Candidate
 from .filters import CandidateFilter
 from .serializers import CandidateSerializer

@@ -30,6 +30,10 @@ class Employee(AbstractUser):
         help_text='Permissões específicas para este usuário.',
         verbose_name='Permissões do usuário',
     )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Atualizado em'
+    )
 
     def __str__(self):
         return self.get_full_name()
