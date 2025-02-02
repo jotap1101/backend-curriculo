@@ -1,7 +1,6 @@
 from rest_framework import response, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from utils.helpers import QuerysetHelper
 from uuid import UUID
 from .models import Resume
 from .serializers import ResumeSerializer
@@ -14,7 +13,6 @@ class GetResumes(APIView):
         try:
             resumes = Resume.objects.all()
             serializer = ResumeSerializer(resumes, many=True)
-
             data = {
                 'status': 'success',
                 'count': resumes.count(),

@@ -1,32 +1,19 @@
 from rest_framework import response, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from utils.helpers import QuerysetHelper
 from .models import Employee
-from .filters import EmployeeFilter
 from .serializers import EmployeeSerializer
 
 class GetEmployees(APIView):
     permission_classes = [IsAuthenticated]
-    filterset_class = EmployeeFilter
-    queryset = Employee.objects.all()
 
     def get(self, request):
         try:
-            queryset = self.queryset
-            queryset = QuerysetHelper.apply_filters(queryset, self.filterset_class, request.GET)
-
-            search_query = request.GET.get('search', None)
-            queryset = QuerysetHelper.apply_search(queryset, search_query, ['first_name', 'last_name', 'username', 'email'])
-
-            ordering = request.GET.get('ordering', None)
-            queryset = QuerysetHelper.apply_ordering(queryset, ordering)
-
-            serializer = EmployeeSerializer(queryset, many=True)
-
+            employees = Employee.objects.all()
+            serializer = EmployeeSerializer(employees, many=True)
             data = {
                 'status': 'success',
-                'count': queryset.count(),
+                'count': employees.count(),
                 'data': {
                     'employees': serializer.data
                 }

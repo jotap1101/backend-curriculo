@@ -1,32 +1,19 @@
 from rest_framework import response, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from utils.helpers import QuerysetHelper
 from .models import Candidate
-from .filters import CandidateFilter
 from .serializers import CandidateSerializer
 
 class GetCandidates(APIView):
     permission_classes = [IsAuthenticated]
-    filterset_class = CandidateFilter
-    queryset = Candidate.objects.all()
 
     def get(self, request):
         try:
-            queryset = self.queryset
-            queryset = QuerysetHelper.apply_filters(queryset, self.filterset_class, request.GET)
-
-            search_query = request.GET.get('search', None)
-            queryset = QuerysetHelper.apply_search(queryset, search_query, ['first_name', 'last_name'])
-
-            ordering = request.GET.get('ordering', None)
-            queryset = QuerysetHelper.apply_ordering(queryset, ordering)
-
-            serializer = CandidateSerializer(queryset, many=True)
-            
+            candidates = Candidate.objects.all()
+            serializer = CandidateSerializer(candidates, many=True)
             data = {
                 'status': 'success',
-                'count': queryset.count(),
+                'count': candidates.count(),
                 'data': {
                     'candidates': serializer.data
                 }
