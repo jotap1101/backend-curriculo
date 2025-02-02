@@ -66,7 +66,7 @@ class ResumeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Resume
-        fields = ['id', 'employee', 'candidate', 'summary', 'subareas_of_interest', 'skills', 'educations', 'experiences', 'languages', 'status']
+        fields = ['id', 'employee', 'candidate', 'summary', 'subareas_of_interest', 'skills', 'educations', 'experiences', 'languages', 'status', 'created_at', 'updated_at']
         extra_kwargs = {
             'id': {
                 'read_only': True,
@@ -75,6 +75,12 @@ class ResumeSerializer(serializers.ModelSerializer):
             'employee': {
                 'read_only': True
             },
+            'created_at': {
+                'read_only': True
+            },
+            'updated_at': {
+                'read_only': True
+            }
         }
 
     def create(self, validated_data):
