@@ -42,26 +42,26 @@ class CandidateSerializer(serializers.ModelSerializer):
         }
 
     def validate_has_disability(self, value):
-        if not value and self.initial_data.get('disability_description') is not None:
-            raise DRFValidationError('Disability description is required when candidate has a disability.')
+        if not value and self.initial_data.get('disability_description'):
+            raise DRFValidationError('Disability description is not allowed when has disability is not marked.')
         
         return value
     
     def validate_disability_description(self, value):
         if self.initial_data.get('has_disability') and not value:
-            raise DRFValidationError('Disability description is required when candidate has a disability.')
+            raise DRFValidationError('Disability description is required when has disability is marked.')
         
         return value
     
     def validate_has_drivers_license(self, value):
-        if not value and self.initial_data.get('drivers_license_category') is not None:
-            raise DRFValidationError('Drivers license category is required when candidate has a drivers license.')
+        if not value and self.initial_data.get('drivers_license_category'):
+            raise DRFValidationError('Drivers license category is not allowed when has drivers license is not marked.')
         
         return value
     
     def validate_drivers_license_category(self, value):
         if self.initial_data.get('has_drivers_license') and not value:
-            raise DRFValidationError('Drivers license category is required when candidate has a drivers license.')
+            raise DRFValidationError('Drivers license category is required when has drivers license is marked.')
         
         return value
     

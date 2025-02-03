@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from .models import Candidate
 from .serializers import CandidateSerializer
+import json
 
 class GetCandidates(APIView):
     permission_classes = [IsAuthenticated]
@@ -35,6 +36,8 @@ class CreateCandidate(APIView):
 
     def post(self, request):
         serializer = CandidateSerializer(data=request.data)
+
+        print(json.dumps(request.data, indent=4))
         
         try:
             if serializer.is_valid():
@@ -48,6 +51,8 @@ class CreateCandidate(APIView):
                 'status': 'error',
                 'errors': formatted_errors
             }
+
+            print(json.dumps(data, indent=4))
 
             return response.Response(data=data, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
@@ -101,6 +106,8 @@ class UpdateCandidate(APIView):
         try:
             candidate = Candidate.objects.get(pk=pk)
             serializer = CandidateSerializer(candidate, data=request.data, partial=False)
+
+            print(json.dumps(request.data, indent=4))
 
             if serializer.is_valid():
                 serializer.save()
